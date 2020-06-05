@@ -102,6 +102,6 @@ void write_jpeg(BYTE *file_block, char *file_name)
     printf("now writing to file: %s\n", file_name);
     FILE *jpeg = fopen(file_name, "ab");
 
-    fwrite(&file_block, 512 * sizeof(BYTE), 1, jpeg);
+    fwrite(file_block, 512 * sizeof(BYTE), 1, jpeg);
     fclose(jpeg);
 }
