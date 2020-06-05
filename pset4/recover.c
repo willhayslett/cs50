@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     if (argc != 2)
     {
         printf("Usage: %s image\n", argv[0]);
+        return 1;
     }
 
     // open our file for reading
@@ -33,19 +34,21 @@ int main(int argc, char *argv[])
     if (!file)
     {
         printf("An error occurred when attempting to read the %s image file\n", argv[1]);
+        return 1;
     }
 
-    // initialize vars for use in program
+    // initialize vars
     BYTE *file_block = malloc(512 * sizeof(BYTE));
-    char *file_name = malloc(10 * sizeof(char));
+    char *file_name = malloc(8 * sizeof(char));
 
-    if (file_block == NULL) {
-        printf("Memory not allocated.\n");
+    if (file_block == NULL)
+    {
+        printf("File block memory not allocated.\n");
         exit(0);
     }
 
     // read the file into our file_block buffer until all is read
-    while(fread(file_block, 512 * sizeof(BYTE), 1, file) > 0)
+    while (fread(file_block, 512 * sizeof(BYTE), 1, file) > 0)
     {
         recover_jpeg(file_block, file_name);
     }
@@ -74,9 +77,7 @@ void recover_jpeg(BYTE *file_block, char *file_name)
         sprintf(file_name, "%03i.jpg", file_name_counter);
 
         //open our jpeg for writing
-        jpeg = fopen(file_name, "w");
-
-        printf("new file to be created: %s\n", file_name);
+        jpeg = fopen(file_name, "wb");
 
         // increment our filename counter
         file_name_counter ++;
@@ -110,10 +111,5 @@ bool is_jpeg(BYTE *file_block)
 
 void write_jpeg(BYTE *file_block, char *file_name)
 {
-    // write the file_block to our file in append mode
-    printf("now writing to file: %s\n", file_name);
-    //FILE *jpeg = fopen(file_name, "ab");
-
-    fwrite(&file_block, 512 * sizeof(BYTE), 1, jpeg);
-    //fclose(jpeg);
+    fwrite(file_block, 512 * sizeof(BYTE), 1, jpeg);
 }
